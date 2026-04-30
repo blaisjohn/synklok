@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 enum ConnectionState: Equatable {
     case disconnected
@@ -11,12 +12,35 @@ enum ConnectionState: Equatable {
         return false
     }
 
-    var displayText: String {
+    /// Short, user-friendly summary suitable for the popover header.
+    var summary: String {
         switch self {
-        case .disconnected:        return "Disconnected"
-        case .connecting:          return "Connecting…"
-        case .connected(let host): return "Connected (\(host))"
-        case .error(let msg):      return "Error: \(msg)"
+        case .disconnected: return "Stopped"
+        case .connecting:   return "Looking for M-1620…"
+        case .connected:    return "Connected"
+        case .error:        return "M-1620 not found"
+        }
+    }
+
+    /// Optional second line — host on connect, raw error on failure.
+    var detail: String? {
+        switch self {
+        case .disconnected, .connecting:
+            return nil
+        case .connected(let host):
+            return host
+        case .error:
+            return "Check that the USB REMOTE cable is plugged in"
+        }
+    }
+
+    /// Color of the status dot.
+    var indicatorColor: Color {
+        switch self {
+        case .connected:    return .green
+        case .connecting:   return .yellow
+        case .error:        return .secondary
+        case .disconnected: return .secondary
         }
     }
 }
