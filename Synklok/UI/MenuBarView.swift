@@ -127,31 +127,40 @@ struct MenuBarView: View {
     // MARK: - Toggles
 
     private var toggles: some View {
-        VStack(spacing: 0) {
-            Toggle(isOn: Binding(
-                get: { !state.isPaused },
-                set: { _ in sync.togglePause() }
-            )) {
-                Label {
-                    Text(state.isPaused ? "Sync paused" : "Auto-sync enabled")
-                } icon: {
-                    Image(systemName: state.isPaused ? "pause.circle" : "arrow.triangle.2.circlepath")
-                }
-            }
-            .toggleStyle(.switch)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 4)
-
-            Toggle(isOn: Binding(
-                get: { launchAtLogin.isEnabled },
-                set: { launchAtLogin.setEnabled($0) }
-            )) {
-                Label("Launch at login", systemImage: "power.circle")
-            }
-            .toggleStyle(.switch)
-            .padding(.horizontal, 4)
-            .padding(.vertical, 4)
+        VStack(spacing: 4) {
+            toggleRow(
+                icon: state.isPaused ? "pause.circle" : "arrow.triangle.2.circlepath",
+                title: state.isPaused ? "Sync paused" : "Auto-sync enabled",
+                isOn: Binding(
+                    get: { !state.isPaused },
+                    set: { _ in sync.togglePause() }
+                )
+            )
+            toggleRow(
+                icon: "power.circle",
+                title: "Launch at login",
+                isOn: Binding(
+                    get: { launchAtLogin.isEnabled },
+                    set: { launchAtLogin.setEnabled($0) }
+                )
+            )
         }
+    }
+
+    private func toggleRow(icon: String, title: String, isOn: Binding<Bool>) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: icon)
+                .foregroundStyle(.secondary)
+                .frame(width: 18, alignment: .center)
+            Text(title)
+            Spacer()
+            Toggle("", isOn: isOn)
+                .labelsHidden()
+                .toggleStyle(.switch)
+                .controlSize(.small)
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 4)
     }
 
     // MARK: - Actions
@@ -161,9 +170,6 @@ struct MenuBarView: View {
             menuButton("Settings…", systemImage: "gearshape") {
                 openSettings()
                 NSApp.activate(ignoringOtherApps: true)
-            }
-            menuButton("Reveal log in Finder", systemImage: "doc.text.magnifyingglass") {
-                NSWorkspace.shared.activateFileViewerSelecting([Logger.shared.logFileURL])
             }
             menuButton("Quit Synklok", systemImage: "power", role: .destructive) {
                 NSApplication.shared.terminate(nil)
