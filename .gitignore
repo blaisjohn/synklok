@@ -1,0 +1,31 @@
+# Xcode build / derived data
+build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+xcuserdata/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xccheckout
+*.moved-aside
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Packages/
+Package.resolved
+
+# macOS
+.DS_Store
+
+# Editor
+*.swp
+*~
+.vscode/
+
+# Distribution artifacts
+dist/
+*.dmg
+*.pkg
+*.zip

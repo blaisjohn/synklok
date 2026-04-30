@@ -1,0 +1,367 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		13077B3D6808283BF705876E /* SynklokApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 509B5BBBE183C085818CB8BF /* SynklokApp.swift */; };
+		46882F4052575F606CB64978 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5250D2998893B83C58CAB9F2 /* Logger.swift */; };
+		6EA4DF46C325F53A3E505433 /* MenuBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB3BF75CFB67BAFCD1D54C9B /* MenuBarView.swift */; };
+		7F29B4955C292503F3022332 /* LaunchAtLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4F915FFC187EEEE991CA00B /* LaunchAtLogin.swift */; };
+		82CDAB03F47F1CE06EACAFAC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF928543FB81F111BF336B /* SyncEngine.swift */; };
+		85168D1618C5075EC3F51C42 /* M1620Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */; };
+		972F55CC3BA734BF5DD8BBD6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268D2175D1B4582FC53CA7C8 /* SettingsView.swift */; };
+		E428ADE9615554650846C5B9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF3C829E32D6F52F9880FF8 /* Settings.swift */; };
+		EF904F4DDBBF45D8D82F6552 /* DeviceDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */; };
+		EFFD0FB58FFC85F8EDADACF6 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F28C29719C83E360399CF1 /* AppState.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		25A098036DB2EEFA00B03084 /* Synklok.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synklok.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		268D2175D1B4582FC53CA7C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		509B5BBBE183C085818CB8BF /* SynklokApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynklokApp.swift; sourceTree = "<group>"; };
+		5250D2998893B83C58CAB9F2 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		6CF3C829E32D6F52F9880FF8 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M1620Client.swift; sourceTree = "<group>"; };
+		99DF928543FB81F111BF336B /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		C3F28C29719C83E360399CF1 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		DB3BF75CFB67BAFCD1D54C9B /* MenuBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarView.swift; sourceTree = "<group>"; };
+		DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscovery.swift; sourceTree = "<group>"; };
+		F4F915FFC187EEEE991CA00B /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		05F927F4B4AB20AF067CDC67 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				25A098036DB2EEFA00B03084 /* Synklok.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		20BCCA815D0A14086CAA337F /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */,
+				6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */,
+				99DF928543FB81F111BF336B /* SyncEngine.swift */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		4EDB89292CEA75CA83E50048 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				DB3BF75CFB67BAFCD1D54C9B /* MenuBarView.swift */,
+				268D2175D1B4582FC53CA7C8 /* SettingsView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		4FD22EF1516AC32A9BE04CBF = {
+			isa = PBXGroup;
+			children = (
+				6CFCE353DCA5063371AEFDDF /* Synklok */,
+				05F927F4B4AB20AF067CDC67 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6CFCE353DCA5063371AEFDDF /* Synklok */ = {
+			isa = PBXGroup;
+			children = (
+				CD666BA24AB1E74C2B12B695 /* Logging */,
+				20BCCA815D0A14086CAA337F /* Sync */,
+				4EDB89292CEA75CA83E50048 /* UI */,
+				C3F28C29719C83E360399CF1 /* AppState.swift */,
+				F4F915FFC187EEEE991CA00B /* LaunchAtLogin.swift */,
+				6CF3C829E32D6F52F9880FF8 /* Settings.swift */,
+				509B5BBBE183C085818CB8BF /* SynklokApp.swift */,
+			);
+			path = Synklok;
+			sourceTree = "<group>";
+		};
+		CD666BA24AB1E74C2B12B695 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				5250D2998893B83C58CAB9F2 /* Logger.swift */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0BB1E84B99779D27910ECD0F /* Synklok */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DDEB56DCD8E3CA84E482F30B /* Build configuration list for PBXNativeTarget "Synklok" */;
+			buildPhases = (
+				2C1DAA86022D2F4DF939FAD5 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Synklok;
+			packageProductDependencies = (
+			);
+			productName = Synklok;
+			productReference = 25A098036DB2EEFA00B03084 /* Synklok.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F8E75D9BC405605F7E682548 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					0BB1E84B99779D27910ECD0F = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = B2288336033008FFE229D9BF /* Build configuration list for PBXProject "Synklok" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 4FD22EF1516AC32A9BE04CBF;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 05F927F4B4AB20AF067CDC67 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0BB1E84B99779D27910ECD0F /* Synklok */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2C1DAA86022D2F4DF939FAD5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EFFD0FB58FFC85F8EDADACF6 /* AppState.swift in Sources */,
+				EF904F4DDBBF45D8D82F6552 /* DeviceDiscovery.swift in Sources */,
+				7F29B4955C292503F3022332 /* LaunchAtLogin.swift in Sources */,
+				46882F4052575F606CB64978 /* Logger.swift in Sources */,
+				85168D1618C5075EC3F51C42 /* M1620Client.swift in Sources */,
+				6EA4DF46C325F53A3E505433 /* MenuBarView.swift in Sources */,
+				E428ADE9615554650846C5B9 /* Settings.swift in Sources */,
+				972F55CC3BA734BF5DD8BBD6 /* SettingsView.swift in Sources */,
+				82CDAB03F47F1CE06EACAFAC /* SyncEngine.swift in Sources */,
+				13077B3D6808283BF705876E /* SynklokApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		15E9CDBF1E396386CF2EEE60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Synklok/Synklok.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.synklok;
+				PRODUCT_NAME = Synklok;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		4AD9E19370746FDE2C92B037 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Synklok;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		B1D7550AE5BE5FF505B87F30 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Synklok/Synklok.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.synklok;
+				PRODUCT_NAME = Synklok;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BC6D4F6651D1950DFF9DCCC5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Synklok;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B2288336033008FFE229D9BF /* Build configuration list for PBXProject "Synklok" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BC6D4F6651D1950DFF9DCCC5 /* Debug */,
+				4AD9E19370746FDE2C92B037 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		DDEB56DCD8E3CA84E482F30B /* Build configuration list for PBXNativeTarget "Synklok" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1D7550AE5BE5FF505B87F30 /* Debug */,
+				15E9CDBF1E396386CF2EEE60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F8E75D9BC405605F7E682548 /* Project object */;
+}
