@@ -25,8 +25,8 @@ actor M1620Client {
     init(host: String) {
         self.host = host
         let cfg = URLSessionConfiguration.ephemeral
-        cfg.timeoutIntervalForRequest = 5
-        cfg.timeoutIntervalForResource = 5
+        cfg.timeoutIntervalForRequest = 2
+        cfg.timeoutIntervalForResource = 2
         cfg.waitsForConnectivity = false
         self.session = URLSession(configuration: cfg)
     }

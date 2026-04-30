@@ -12,6 +12,7 @@ struct SynklokApp: App {
         let e = SyncEngine(state: s, settings: AppSettings.shared)
         _state = State(initialValue: s)
         _sync = State(initialValue: e)
+        Logger.shared.info("Synklok launched — version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "?")")
         e.start()
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
     }

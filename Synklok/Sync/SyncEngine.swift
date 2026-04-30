@@ -13,7 +13,8 @@ final class SyncEngine {
     private var lastMadiRate: Int?
     private var lastConnectedHost: String?
 
-    private let pollInterval: Duration = .milliseconds(500)
+    private let connectedInterval:    Duration = .milliseconds(500)
+    private let disconnectedInterval: Duration = .seconds(3)
 
     init(state: AppState, settings: AppSettings) {
         self.state = state
@@ -109,7 +110,7 @@ final class SyncEngine {
                 state.connectionState = .error(error.localizedDescription)
             }
 
-            try? await Task.sleep(for: pollInterval)
+            try? await Task.sleep(for: connected ? connectedInterval : disconnectedInterval)
         }
     }
 
