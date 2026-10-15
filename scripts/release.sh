@@ -23,20 +23,40 @@ DIST=dist
 SITE="${SYNKLOK_WEB:-$HOME/Documents/synklok-web}"
 FEED_URL_PREFIX="https://synklok.app/downloads/"
 
-IDENTITY=$(security find-identity -v -p codesigning | grep -m1 -o '"Developer ID Application: [^"]*"' | tr -d '"') || true
+# Renewed Developer ID certs share one name, so sign by SHA-1 fingerprint,
+# choosing the valid identity that expires last.
+read -r IDENTITY_SHA IDENTITY <<<"$(python3 -I - <<'PY'
+import re, subprocess
+ids = subprocess.run(["security", "find-identity", "-v", "-p", "codesigning"],
+                     capture_output=True, text=True).stdout
+best = None
+for sha, name in re.findall(r'([0-9A-F]{40}) "(Developer ID Application: [^"]+)"', ids):
+    certs = subprocess.run(["security", "find-certificate", "-a", "-Z", "-p", "-c", name],
+                           capture_output=True, text=True).stdout
+    m = re.search(sha + r".*?(-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----)", certs, re.S)
+    if not m:
+        continue
+    end = subprocess.run(["openssl", "x509", "-noout", "-enddate", "-dateopt", "iso_8601"],
+                         input=m.group(1), capture_output=True, text=True).stdout.strip()
+    if best is None or end > best[0]:
+        best = (end, sha, name)
+if best:
+    print(best[1], best[2])
+PY
+)"
 if [[ -z "$IDENTITY" ]]; then
   echo "No 'Developer ID Application' certificate in the keychain. See SETUP.md → Distribution." >&2
   exit 1
 fi
 TEAM_ID=$(sed -E 's/.*\(([A-Z0-9]{10})\)$/\1/' <<<"$IDENTITY")
-echo "Signing as: $IDENTITY"
+echo "Signing as: $IDENTITY ($IDENTITY_SHA)"
 
 xcodegen generate --quiet
 rm -rf "$BUILD" && mkdir -p "$BUILD" "$DIST"
 
 xcodebuild -project Synklok.xcodeproj -scheme Synklok -configuration Release \
   -archivePath "$BUILD/Synklok.xcarchive" -clonedSourcePackagesDirPath "$SPM" \
-  CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Developer ID Application" DEVELOPMENT_TEAM="$TEAM_ID" \
+  CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="$IDENTITY_SHA" DEVELOPMENT_TEAM="$TEAM_ID" \
   OTHER_CODE_SIGN_FLAGS="--timestamp" \
   archive | grep -E 'error|warning: |ARCHIVE' || true
 [[ -d "$BUILD/Synklok.xcarchive" ]] || { echo "Archive failed — rerun xcodebuild without the grep to see why." >&2; exit 1; }
@@ -50,7 +70,7 @@ cat > "$BUILD/ExportOptions.plist" <<PLIST
   <key>method</key><string>developer-id</string>
   <key>teamID</key><string>$TEAM_ID</string>
   <key>signingStyle</key><string>manual</string>
-  <key>signingCertificate</key><string>Developer ID Application</string>
+  <key>signingCertificate</key><string>$IDENTITY_SHA</string>
 </dict></plist>
 PLIST
 xcodebuild -exportArchive -archivePath "$BUILD/Synklok.xcarchive" \
@@ -71,7 +91,7 @@ mkdir -p "$STAGE" && cp -R "$APP" "$STAGE/" && ln -s /Applications "$STAGE/Appli
 DMG="$DIST/Synklok-$VERSION-$BUILDNUM.dmg"
 rm -f "$DMG"
 hdiutil create -quiet -volname "Synklok $VERSION" -srcfolder "$STAGE" -ov -format UDZO "$DMG"
-codesign --sign "$IDENTITY" --timestamp "$DMG"
+codesign --sign "$IDENTITY_SHA" --timestamp "$DMG"
 
 echo "Notarizing (usually 1–5 minutes)…"
 xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait

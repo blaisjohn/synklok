@@ -63,9 +63,17 @@ drag to Applications, done. Requires macOS 14+.
 ### One-time setup
 
 1. **Xcode → Settings → Accounts** → `+` → sign in with the Apple Developer account.
-2. Select the team → **Manage Certificates…** → `+` → **Developer ID Application**.
-   (Only the Account Holder can create this one.) Check it landed:
-   `security find-identity -v -p codesigning`
+2. Create a **Developer ID Application** certificate at
+   [developer.apple.com → Certificates](https://developer.apple.com/account/resources/certificates/add)
+   and choose **G2 Sub-CA** (not "Previous Sub-CA", which expires 2027-02-01).
+   Upload a request made in Keychain Access → Certificate Assistant → Request a
+   Certificate From a Certificate Authority (Saved to disk), then double-click the
+   downloaded `.cer`. Check it landed: `security find-identity -v -p codesigning`
+   - Certificates last ~13 months. **Renew yearly** the same way; `release.sh`
+     signs by fingerprint with whichever valid certificate expires last, so old
+     and new can overlap. Delete the old one from the keychain afterwards.
+   - **Never revoke** a certificate that signed a shipped build — that stops
+     those copies opening. Expired is fine; Apple's timestamp keeps them valid.
 3. Create an app-specific password at [account.apple.com](https://account.apple.com)
    → Sign-In and Security → App-Specific Passwords, then store it for notarization:
    ```bash
@@ -80,7 +88,16 @@ drag to Applications, done. Requires macOS 14+.
    ```bash
    ~/Library/Caches/Synklok/spm/artifacts/sparkle/Sparkle/bin/generate_keys --account synklok -x synklok-sparkle-key.txt
    ```
-   Store the file in 1Password, then delete it. On a new Mac, import with `-f`.
+   On a new Mac, import with `-f`.
+
+### Key backup
+
+Both keys (Developer ID `.p12` + Sparkle key, with a README) live in an
+AES-256 encrypted disk image on the NAS: `znas` → `home/Backup/Synklok/Synklok-Keys-Backup.dmg`
+(made 2026-10-15; password kept offline by John). After renewing the
+certificate, export the new one (Keychain Access → My Certificates → File →
+Export Items → .p12) and make a fresh image — never stage key files in
+`~/Desktop` or `~/Documents`, which iCloud syncs.
 
 ### Each release
 
