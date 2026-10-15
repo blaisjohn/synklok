@@ -8,6 +8,7 @@ struct MenuBarView: View {
     @Bindable private var launchAtLogin = LaunchAtLogin.shared
     @Environment(\.openSettings) private var openSettings
     @State private var removalCommandCopied = false
+    @ObservedObject private var updates = UpdateController.shared
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -198,6 +199,10 @@ struct MenuBarView: View {
 
     private var actions: some View {
         VStack(spacing: 0) {
+            menuButton("Check for Updates…", systemImage: "arrow.down.circle") {
+                updates.checkForUpdates()
+            }
+            .disabled(!updates.canCheckForUpdates)
             menuButton("Settings…", systemImage: "gearshape") {
                 openSettings()
                 NSApp.activate(ignoringOtherApps: true)

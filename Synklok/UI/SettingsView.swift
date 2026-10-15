@@ -9,6 +9,8 @@ struct SettingsView: View {
     @State private var discovery = DeviceDiscovery()
     @State private var testResult: String?
     @State private var testing = false
+    @State private var diagnosticsCopied = false
+    @ObservedObject private var updates = UpdateController.shared
 
     var body: some View {
         TabView {
@@ -93,6 +95,27 @@ struct SettingsView: View {
                 Toggle("Notify when device disconnects", isOn: $settings.notifyOnDisconnect)
             }
 
+            Section("Menu bar") {
+                Toggle("Show sample rate in menu bar", isOn: $settings.showRateInMenuBar)
+                Text("A warning icon replaces the metronome if the M-1620 and MADI input stay out of sync.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            Section("Updates") {
+                Toggle("Automatically check for updates", isOn: Binding(
+                    get: { updates.automaticallyChecksForUpdates },
+                    set: { updates.automaticallyChecksForUpdates = $0 }
+                ))
+                HStack {
+                    Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Button("Check now") { updates.checkForUpdates() }
+                        .disabled(!updates.canCheckForUpdates)
+                }
+            }
+
             Section("Startup") {
                 Toggle("Launch Synklok at login",
                        isOn: Binding(
@@ -110,6 +133,21 @@ struct SettingsView: View {
                     Spacer()
                     Button("Reveal") {
                         NSWorkspace.shared.activateFileViewerSelecting([Logger.shared.logFileURL])
+                    }
+                }
+                HStack {
+                    Text(diagnosticsCopied
+                         ? "Copied — paste it into a message."
+                         : "Having trouble? Copy a report to send.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Button("Copy diagnostics") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(
+                            Diagnostics.report(state: state, settings: settings),
+                            forType: .string)
+                        diagnosticsCopied = true
                     }
                 }
             }

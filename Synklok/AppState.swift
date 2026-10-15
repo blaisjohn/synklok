@@ -63,6 +63,8 @@ final class AppState {
     var isPaused: Bool = false
     /// The old M-1620 Rate Sync script is running or set to start at boot.
     var legacyScriptDetected: Bool = false
+    /// Device rate has disagreed with a locked MADI input for a few seconds.
+    var rateMismatch: Bool = false
 
     func recordRateChange(from: Int?, to: Int) {
         let change = RateChange(timestamp: Date(), from: from, to: to)

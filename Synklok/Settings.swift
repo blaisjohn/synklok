@@ -19,6 +19,9 @@ final class AppSettings {
     var notifyOnDisconnect: Bool {
         didSet { UserDefaults.standard.set(notifyOnDisconnect, forKey: "notifyOnDisconnect") }
     }
+    var showRateInMenuBar: Bool {
+        didSet { UserDefaults.standard.set(showRateInMenuBar, forKey: "showRateInMenuBar") }
+    }
 
     var effectiveHost: String {
         useCustomHost && !customHost.isEmpty ? customHost : Self.defaultHost
@@ -30,5 +33,6 @@ final class AppSettings {
         self.useCustomHost = d.bool(forKey: "useCustomHost")
         self.notifyOnRateChange = (d.object(forKey: "notifyOnRateChange") as? Bool) ?? true
         self.notifyOnDisconnect = (d.object(forKey: "notifyOnDisconnect") as? Bool) ?? true
+        self.showRateInMenuBar = d.bool(forKey: "showRateInMenuBar")
     }
 }

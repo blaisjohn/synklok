@@ -14,6 +14,7 @@ struct SynklokApp: App {
         _sync = State(initialValue: e)
         Logger.shared.info("Synklok launched — version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] ?? "?")")
         e.start()
+        _ = UpdateController.shared
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
     }
 
@@ -21,7 +22,7 @@ struct SynklokApp: App {
         MenuBarExtra {
             MenuBarView(state: state, sync: sync)
         } label: {
-            Image(systemName: state.connectionState.isConnected ? "metronome.fill" : "metronome")
+            MenuBarLabel(state: state, settings: AppSettings.shared)
         }
         .menuBarExtraStyle(.window)
 

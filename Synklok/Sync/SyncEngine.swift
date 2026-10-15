@@ -12,12 +12,15 @@ final class SyncEngine {
     private var task: Task<Void, Never>?
     private var legacyTask: Task<Void, Never>?
     private var legacyNotified = false
+    private var mismatchSince: Date?
     private var lastMadiRate: Int?
     private var lastConnectedHost: String?
 
     private let connectedInterval:    Duration = .milliseconds(500)
     private let disconnectedInterval: Duration = .seconds(3)
     private let legacyCheckInterval:  Duration = .seconds(30)
+    /// Normal switches resolve in ~1 s; only flag a mismatch that outlasts this.
+    private let mismatchGrace: TimeInterval = 3
 
     init(state: AppState, settings: AppSettings) {
         self.state = state
@@ -38,6 +41,7 @@ final class SyncEngine {
         legacyTask?.cancel()
         legacyTask = nil
         state.connectionState = .disconnected
+        updateMismatch(nil)
         Logger.shared.info("Sync stopped")
     }
 
@@ -84,6 +88,7 @@ final class SyncEngine {
                     Logger.shared.info("MADI input rate changed: \(prev) → \(madi) Hz")
                 }
                 lastMadiRate = status.madiRate
+                updateMismatch(status)
 
                 if !state.isPaused,
                    let configured = status.configuredRate,
@@ -114,10 +119,27 @@ final class SyncEngine {
                     connected = false
                 }
                 state.connectionState = .error(error.localizedDescription)
+                updateMismatch(nil)
             }
 
             try? await Task.sleep(for: connected ? connectedInterval : disconnectedInterval)
         }
+    }
+
+    private func updateMismatch(_ status: DeviceStatus?) {
+        guard let status,
+              status.madiSync == true,
+              let configured = status.configuredRate,
+              let madi = status.madiRate,
+              Self.validRates.contains(madi),
+              configured != madi else {
+            mismatchSince = nil
+            state.rateMismatch = false
+            return
+        }
+        let since = mismatchSince ?? Date()
+        mismatchSince = since
+        state.rateMismatch = Date().timeIntervalSince(since) >= mismatchGrace
     }
 
     private func legacyLoop() async {

@@ -1,18 +1,27 @@
 #!/bin/zsh
-# Build a Developer ID–signed, notarized, stapled Synklok DMG in dist/.
+# Build a Developer ID–signed, notarized, stapled Synklok DMG in dist/, then
+# add it to the Sparkle update feed in the synklok-web checkout (not pushed).
 #
 # One-time setup (see SETUP.md → Distribution):
 #   1. Xcode → Settings → Accounts: sign in, then Manage Certificates → + → Developer ID Application
 #   2. xcrun notarytool store-credentials synklok-notary --apple-id <you> --team-id <TEAMID>
+#   3. Sparkle signing key in the keychain under account "synklok" (generate_keys --account synklok)
 #
 # Usage: scripts/release.sh            (version comes from project.yml)
-#        NOTARY_PROFILE=other scripts/release.sh
+#        NOTARY_PROFILE=other SYNKLOK_WEB=~/path/to/synklok-web scripts/release.sh
+# Optional release notes: release-notes/<version>.html
 set -euo pipefail
 
 cd "${0:A:h}/.."
 NOTARY_PROFILE="${NOTARY_PROFILE:-synklok-notary}"
-BUILD=build/release
+# Build outside ~/Documents: iCloud sync adds Finder metadata to new files,
+# which codesign --strict rejects.
+WORK="$HOME/Library/Caches/Synklok"
+BUILD="$WORK/release"
+SPM="$WORK/spm"   # kept between runs so Sparkle isn't re-downloaded
 DIST=dist
+SITE="${SYNKLOK_WEB:-$HOME/Documents/synklok-web}"
+FEED_URL_PREFIX="https://synklok.app/downloads/"
 
 IDENTITY=$(security find-identity -v -p codesigning | grep -m1 -o '"Developer ID Application: [^"]*"' | tr -d '"') || true
 if [[ -z "$IDENTITY" ]]; then
@@ -26,16 +35,34 @@ xcodegen generate --quiet
 rm -rf "$BUILD" && mkdir -p "$BUILD" "$DIST"
 
 xcodebuild -project Synklok.xcodeproj -scheme Synklok -configuration Release \
-  -archivePath "$BUILD/Synklok.xcarchive" \
+  -archivePath "$BUILD/Synklok.xcarchive" -clonedSourcePackagesDirPath "$SPM" \
   CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY="Developer ID Application" DEVELOPMENT_TEAM="$TEAM_ID" \
   OTHER_CODE_SIGN_FLAGS="--timestamp" \
   archive | grep -E 'error|warning: |ARCHIVE' || true
+[[ -d "$BUILD/Synklok.xcarchive" ]] || { echo "Archive failed — rerun xcodebuild without the grep to see why." >&2; exit 1; }
 
-APP="$BUILD/Synklok.xcarchive/Products/Applications/Synklok.app"
-[[ -d "$APP" ]] || { echo "Archive failed — rerun xcodebuild without the grep to see why." >&2; exit 1; }
+# Export re-signs nested code (Sparkle's Autoupdate, Updater.app, XPC services)
+# with our Developer ID, which notarization requires.
+cat > "$BUILD/ExportOptions.plist" <<PLIST
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>method</key><string>developer-id</string>
+  <key>teamID</key><string>$TEAM_ID</string>
+  <key>signingStyle</key><string>manual</string>
+  <key>signingCertificate</key><string>Developer ID Application</string>
+</dict></plist>
+PLIST
+xcodebuild -exportArchive -archivePath "$BUILD/Synklok.xcarchive" \
+  -exportOptionsPlist "$BUILD/ExportOptions.plist" -exportPath "$BUILD/export" \
+  | grep -E 'error|EXPORT' || true
+
+APP="$BUILD/export/Synklok.app"
+[[ -d "$APP" ]] || { echo "Export failed — rerun xcodebuild -exportArchive without the grep to see why." >&2; exit 1; }
 
 VERSION=$(/usr/libexec/PlistBuddy -c 'Print CFBundleShortVersionString' "$APP/Contents/Info.plist")
 BUILDNUM=$(/usr/libexec/PlistBuddy -c 'Print CFBundleVersion' "$APP/Contents/Info.plist")
+xattr -cr "$APP"
 codesign --verify --deep --strict "$APP"
 
 # DMG with the app and an /Applications shortcut for drag-to-install.
@@ -52,3 +79,19 @@ xcrun stapler staple "$DMG"
 
 spctl --assess --type open --context context:primary-signature -v "$DMG"
 echo "\nReady: $DMG"
+
+# Sparkle feed: copy the DMG (and optional notes) into the site and rebuild
+# appcast.xml, signing each entry with the EdDSA key from the keychain.
+if [[ -d "$SITE/.git" ]]; then
+  DL="$SITE/downloads"
+  mkdir -p "$DL"
+  cp "$DMG" "$DL/"
+  NOTES="release-notes/$VERSION.html"
+  [[ -f "$NOTES" ]] && cp "$NOTES" "$DL/${DMG:t:r}.html"
+  "$SPM/artifacts/sparkle/Sparkle/bin/generate_appcast" --account synklok \
+    --download-url-prefix "$FEED_URL_PREFIX" --link https://synklok.app \
+    --maximum-deltas 0 --embed-release-notes "$DL"
+  echo "Update feed written to $DL/appcast.xml — review, then commit and push synklok-web to publish."
+else
+  echo "No synklok-web checkout at $SITE; skipped the update feed." >&2
+fi

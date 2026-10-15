@@ -73,15 +73,29 @@ drag to Applications, done. Requires macOS 14+.
    ```
    It prompts for the password and keeps it in the login keychain.
 
+4. **Sparkle update key** (for automatic updates). Already created on John's Mac
+   under keychain account `synklok`; its public half is `SUPublicEDKey` in
+   `Synklok/Info.plist`. **Back it up** — without it, installed copies can't
+   be updated:
+   ```bash
+   ~/Library/Caches/Synklok/spm/artifacts/sparkle/Sparkle/bin/generate_keys --account synklok -x synklok-sparkle-key.txt
+   ```
+   Store the file in 1Password, then delete it. On a new Mac, import with `-f`.
+
 ### Each release
 
-Bump `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in `project.yml`, then:
+Bump `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in `project.yml`, optionally
+write `release-notes/<version>.html`, then:
 
 ```bash
 scripts/release.sh
 ```
 
-Output: `dist/Synklok-<version>-<build>.dmg` (signed, notarized, stapled).
+Output: `dist/Synklok-<version>-<build>.dmg` (signed, notarized, stapled), also
+copied to `~/Documents/synklok-web/downloads/` with a regenerated
+`appcast.xml`. **Publishing is a separate step:** commit and push synklok-web,
+which deploys to synklok.app. Installed copies of Synklok check
+`https://synklok.app/downloads/appcast.xml` daily and offer the update.
 
 ### First launch on a tester's Mac
 

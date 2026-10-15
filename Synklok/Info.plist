@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+    <key>SUFeedURL</key>
+    <string>https://synklok.app/downloads/appcast.xml</string>
+    <key>SUPublicEDKey</key>
+    <string>Sfj2s28ByhgAnhwtChcZD7VBGHK2CSDdXfgq+Dn3YZg=</string>
+    <key>SUEnableAutomaticChecks</key>
+    <true/>
     <key>NSBonjourServices</key>
     <array>
         <string>_http._tcp</string>
