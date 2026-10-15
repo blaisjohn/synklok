@@ -55,8 +55,36 @@ The metronome icon will appear in the menu bar. Click it for the popover.
 Logs live at `~/Library/Logs/Synklok/sync.log` (1 MB rotation, 5 archives kept).
 Tail live: `tail -f ~/Library/Logs/Synklok/sync.log`
 
-## Distribution (later)
+## Distribution
 
-Code signing + notarization for direct distribution requires the Apple
-Developer Program ($99/yr). The build script is wired for `CODE_SIGN_STYLE: Automatic`
-so once a Developer ID team is selected in Xcode, signing is handled.
+Testers get a Developer ID–signed, notarized DMG: no Gatekeeper warnings,
+drag to Applications, done. Requires macOS 14+.
+
+### One-time setup
+
+1. **Xcode → Settings → Accounts** → `+` → sign in with the Apple Developer account.
+2. Select the team → **Manage Certificates…** → `+` → **Developer ID Application**.
+   (Only the Account Holder can create this one.) Check it landed:
+   `security find-identity -v -p codesigning`
+3. Create an app-specific password at [account.apple.com](https://account.apple.com)
+   → Sign-In and Security → App-Specific Passwords, then store it for notarization:
+   ```bash
+   xcrun notarytool store-credentials synklok-notary --apple-id <apple-id-email> --team-id <TEAMID>
+   ```
+   It prompts for the password and keeps it in the login keychain.
+
+### Each release
+
+Bump `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in `project.yml`, then:
+
+```bash
+scripts/release.sh
+```
+
+Output: `dist/Synklok-<version>-<build>.dmg` (signed, notarized, stapled).
+
+### First launch on a tester's Mac
+
+- macOS asks to allow Synklok to find devices on the local network: **Allow**.
+  If it was denied: System Settings → Privacy & Security → Local Network.
+- Launch at login is a toggle in Synklok's settings.
