@@ -43,7 +43,7 @@ final class Logger: @unchecked Sendable {
             if FileManager.default.fileExists(atPath: logFile.path) {
                 if let h = try? FileHandle(forWritingTo: logFile) {
                     defer { try? h.close() }
-                    try? h.seekToEnd()
+                    _ = try? h.seekToEnd()
                     try? h.write(contentsOf: data)
                 }
             } else {

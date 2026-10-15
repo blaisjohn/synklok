@@ -1,12 +1,16 @@
 // Renders the 1024×1024 Synklok app icon: the synklok.app metronome mark
 // (green-400 on zinc-950) inside the macOS icon shape.
 //
-// Usage: swift scripts/make-icon.swift <out.png>
+// Usage: swift scripts/make-icon.swift <out.png> [--full-bleed]
 // Then scripts/make-icon.sh slices it into the asset catalog.
+// --full-bleed fills the whole square (for web/touch icons, which the
+// platform rounds itself) instead of drawing the macOS tile and shadow.
 import AppKit
 
 let size: CGFloat = 1024
-let out = CommandLine.arguments.dropFirst().first ?? "icon-1024.png"
+let args = CommandLine.arguments.dropFirst()
+let out = args.first { !$0.hasPrefix("--") } ?? "icon-1024.png"
+let fullBleed = args.contains("--full-bleed")
 
 let zinc950 = NSColor(srgbRed: 0x09/255, green: 0x09/255, blue: 0x0b/255, alpha: 1)
 let zinc800 = NSColor(srgbRed: 0x27/255, green: 0x27/255, blue: 0x2a/255, alpha: 1)
@@ -20,8 +24,10 @@ NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: rep)
 let ctx = NSGraphicsContext.current!.cgContext
 
 // macOS icon grid: 824 pt rounded square centred in 1024, with a soft drop shadow.
-let tile = CGRect(x: 100, y: 100, width: 824, height: 824)
-let tilePath = CGPath(roundedRect: tile, cornerWidth: 185, cornerHeight: 185, transform: nil)
+let tile = fullBleed ? CGRect(x: 0, y: 0, width: size, height: size)
+                     : CGRect(x: 100, y: 100, width: 824, height: 824)
+let corner: CGFloat = fullBleed ? 0 : 185
+let tilePath = CGPath(roundedRect: tile, cornerWidth: corner, cornerHeight: corner, transform: nil)
 ctx.saveGState()
 ctx.setShadow(offset: CGSize(width: 0, height: -10), blur: 24,
               color: NSColor.black.withAlphaComponent(0.35).cgColor)
@@ -39,10 +45,12 @@ let gradient = CGGradient(colorsSpace: CGColorSpaceCreateDeviceRGB(),
                           locations: [0, 1])!
 ctx.drawLinearGradient(gradient, start: CGPoint(x: 512, y: 924), end: CGPoint(x: 512, y: 380), options: [])
 ctx.restoreGState()
-ctx.addPath(tilePath)
-ctx.setStrokeColor(NSColor.white.withAlphaComponent(0.08).cgColor)
-ctx.setLineWidth(4)
-ctx.strokePath()
+if !fullBleed {
+    ctx.addPath(tilePath)
+    ctx.setStrokeColor(NSColor.white.withAlphaComponent(0.08).cgColor)
+    ctx.setLineWidth(4)
+    ctx.strokePath()
+}
 
 // The site logo path, 24-unit SVG box (y down):
 //   M9 2h6l4 18-2 2H7l-2-2L9 2z  m2 4l-2 9h6l-2-9h-2z   (even-odd window)

@@ -17,8 +17,10 @@
 		85168D1618C5075EC3F51C42 /* M1620Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */; };
 		8A531260E46E080FBFF7E95F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A9FA6156A1786AF5E8FC09D /* Assets.xcassets */; };
 		972F55CC3BA734BF5DD8BBD6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268D2175D1B4582FC53CA7C8 /* SettingsView.swift */; };
+		A096D67DDB61C3E59A56F442 /* AboutPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DD830A7682A34CFB15158F /* AboutPanel.swift */; };
 		A48F4C544FBE62A906387291 /* UpdateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35689455FCE2969229B04639 /* UpdateController.swift */; };
 		AC96453B5F385586EDE7C6C6 /* Diagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53E7F837B1CC468661B48F4A /* Diagnostics.swift */; };
+		B52A787681D7A02F6034D5F7 /* Acknowledgements.txt in Resources */ = {isa = PBXBuildFile; fileRef = F72AE9E32240924065D1051A /* Acknowledgements.txt */; };
 		B6FDA82EC8D5FBBE2DEC1EED /* LegacyScriptDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64804C07F478A9A3D89744AE /* LegacyScriptDetector.swift */; };
 		E428ADE9615554650846C5B9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF3C829E32D6F52F9880FF8 /* Settings.swift */; };
 		EF904F4DDBBF45D8D82F6552 /* DeviceDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */; };
@@ -26,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		03DD830A7682A34CFB15158F /* AboutPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutPanel.swift; sourceTree = "<group>"; };
 		25A098036DB2EEFA00B03084 /* Synklok.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Synklok.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		268D2175D1B4582FC53CA7C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		35689455FCE2969229B04639 /* UpdateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateController.swift; sourceTree = "<group>"; };
@@ -42,6 +45,7 @@
 		DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceDiscovery.swift; sourceTree = "<group>"; };
 		E8569CC6968D221E5146502A /* MenuBarLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuBarLabel.swift; sourceTree = "<group>"; };
 		F4F915FFC187EEEE991CA00B /* LaunchAtLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchAtLogin.swift; sourceTree = "<group>"; };
+		F72AE9E32240924065D1051A /* Acknowledgements.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Acknowledgements.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,6 +82,7 @@
 		4EDB89292CEA75CA83E50048 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				03DD830A7682A34CFB15158F /* AboutPanel.swift */,
 				E8569CC6968D221E5146502A /* MenuBarLabel.swift */,
 				DB3BF75CFB67BAFCD1D54C9B /* MenuBarView.swift */,
 				268D2175D1B4582FC53CA7C8 /* SettingsView.swift */,
@@ -99,6 +104,7 @@
 				CD666BA24AB1E74C2B12B695 /* Logging */,
 				20BCCA815D0A14086CAA337F /* Sync */,
 				4EDB89292CEA75CA83E50048 /* UI */,
+				F72AE9E32240924065D1051A /* Acknowledgements.txt */,
 				C3F28C29719C83E360399CF1 /* AppState.swift */,
 				8A9FA6156A1786AF5E8FC09D /* Assets.xcassets */,
 				F4F915FFC187EEEE991CA00B /* LaunchAtLogin.swift */,
@@ -182,6 +188,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B52A787681D7A02F6034D5F7 /* Acknowledgements.txt in Resources */,
 				8A531260E46E080FBFF7E95F /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -193,6 +200,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A096D67DDB61C3E59A56F442 /* AboutPanel.swift in Sources */,
 				EFFD0FB58FFC85F8EDADACF6 /* AppState.swift in Sources */,
 				EF904F4DDBBF45D8D82F6552 /* DeviceDiscovery.swift in Sources */,
 				AC96453B5F385586EDE7C6C6 /* Diagnostics.swift in Sources */,
@@ -265,7 +273,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -284,10 +292,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Synklok;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 John Blais. MIT License.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Synklok talks to your RME M-1620 over the local network (or the USB control link) to monitor and sync the sample rate.";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -351,7 +359,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -376,10 +384,10 @@
 				INFOPLIST_KEY_CFBundleDisplayName = Synklok;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 John Blais. MIT License.";
 				INFOPLIST_KEY_NSLocalNetworkUsageDescription = "Synklok talks to your RME M-1620 over the local network (or the USB control link) to monitor and sync the sample rate.";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0.2;
+				MARKETING_VERSION = 1.0.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;

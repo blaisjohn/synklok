@@ -10,14 +10,14 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "1.0.2"
-    CURRENT_PROJECT_VERSION: "3"
+    MARKETING_VERSION: "1.0.3"
+    CURRENT_PROJECT_VERSION: "4"
     DEAD_CODE_STRIPPING: YES
     GENERATE_INFOPLIST_FILE: YES
     INFOPLIST_KEY_LSUIElement: YES
     INFOPLIST_KEY_CFBundleDisplayName: Synklok
     INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.music
-    INFOPLIST_KEY_NSHumanReadableCopyright: ""
+    INFOPLIST_KEY_NSHumanReadableCopyright: "© 2026 John Blais. MIT License."
     INFOPLIST_KEY_NSLocalNetworkUsageDescription: "Synklok talks to your RME M-1620 over the local network (or the USB control link) to monitor and sync the sample rate."
     ENABLE_HARDENED_RUNTIME: YES
     ENABLE_USER_SCRIPT_SANDBOXING: YES

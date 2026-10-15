@@ -111,6 +111,7 @@ struct SettingsView: View {
                     Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?")")
                         .foregroundStyle(.secondary)
                     Spacer()
+                    Button("About Synklok") { AboutPanel.show() }
                     Button("Check now") { updates.checkForUpdates() }
                         .disabled(!updates.canCheckForUpdates)
                 }
