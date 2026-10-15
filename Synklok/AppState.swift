@@ -61,6 +61,8 @@ final class AppState {
     var madiSync: Bool?
     var history: [RateChange] = []
     var isPaused: Bool = false
+    /// The old M-1620 Rate Sync script is running or set to start at boot.
+    var legacyScriptDetected: Bool = false
 
     func recordRateChange(from: Int?, to: Int) {
         let change = RateChange(timestamp: Date(), from: from, to: to)

@@ -7,6 +7,7 @@ struct MenuBarView: View {
 
     @Bindable private var launchAtLogin = LaunchAtLogin.shared
     @Environment(\.openSettings) private var openSettings
+    @State private var removalCommandCopied = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -14,6 +15,13 @@ struct MenuBarView: View {
                 .padding(.horizontal, 14)
                 .padding(.top, 12)
                 .padding(.bottom, 10)
+
+            if state.legacyScriptDetected {
+                Divider()
+                legacyWarning
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+            }
 
             Divider()
 
@@ -64,6 +72,29 @@ struct MenuBarView: View {
             }
 
             Spacer()
+        }
+    }
+
+    // MARK: - Old script warning
+
+    private var legacyWarning: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Old M-1620 Rate Sync is still installed")
+                    .font(.subheadline.weight(.semibold))
+                Text("It changes the sample rate on its own and can fight Synklok. Paste this command into Terminal to remove it — it will ask for your Mac password.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button(removalCommandCopied ? "Copied — paste into Terminal" : "Copy removal command") {
+                    NSPasteboard.general.clearContents()
+                    NSPasteboard.general.setString(LegacyScriptDetector.removalCommand, forType: .string)
+                    removalCommandCopied = true
+                }
+                .controlSize(.small)
+            }
         }
     }
 

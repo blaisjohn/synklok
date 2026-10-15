@@ -14,6 +14,7 @@
 		82CDAB03F47F1CE06EACAFAC /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99DF928543FB81F111BF336B /* SyncEngine.swift */; };
 		85168D1618C5075EC3F51C42 /* M1620Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */; };
 		972F55CC3BA734BF5DD8BBD6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 268D2175D1B4582FC53CA7C8 /* SettingsView.swift */; };
+		B6FDA82EC8D5FBBE2DEC1EED /* LegacyScriptDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64804C07F478A9A3D89744AE /* LegacyScriptDetector.swift */; };
 		E428ADE9615554650846C5B9 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF3C829E32D6F52F9880FF8 /* Settings.swift */; };
 		EF904F4DDBBF45D8D82F6552 /* DeviceDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */; };
 		EFFD0FB58FFC85F8EDADACF6 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F28C29719C83E360399CF1 /* AppState.swift */; };
@@ -24,6 +25,7 @@
 		268D2175D1B4582FC53CA7C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		509B5BBBE183C085818CB8BF /* SynklokApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SynklokApp.swift; sourceTree = "<group>"; };
 		5250D2998893B83C58CAB9F2 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
+		64804C07F478A9A3D89744AE /* LegacyScriptDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyScriptDetector.swift; sourceTree = "<group>"; };
 		6CF3C829E32D6F52F9880FF8 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = M1620Client.swift; sourceTree = "<group>"; };
 		99DF928543FB81F111BF336B /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
@@ -46,6 +48,7 @@
 			isa = PBXGroup;
 			children = (
 				DC6B159F0F6A1E0E2FA5D1DB /* DeviceDiscovery.swift */,
+				64804C07F478A9A3D89744AE /* LegacyScriptDetector.swift */,
 				6FD43EFA06BF6978D0CCE571 /* M1620Client.swift */,
 				99DF928543FB81F111BF336B /* SyncEngine.swift */,
 			);
@@ -152,6 +155,7 @@
 				EFFD0FB58FFC85F8EDADACF6 /* AppState.swift in Sources */,
 				EF904F4DDBBF45D8D82F6552 /* DeviceDiscovery.swift in Sources */,
 				7F29B4955C292503F3022332 /* LaunchAtLogin.swift in Sources */,
+				B6FDA82EC8D5FBBE2DEC1EED /* LegacyScriptDetector.swift in Sources */,
 				46882F4052575F606CB64978 /* Logger.swift in Sources */,
 				85168D1618C5075EC3F51C42 /* M1620Client.swift in Sources */,
 				6EA4DF46C325F53A3E505433 /* MenuBarView.swift in Sources */,

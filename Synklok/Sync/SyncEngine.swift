@@ -10,11 +10,14 @@ final class SyncEngine {
     private let settings: AppSettings
     private let client: M1620Client
     private var task: Task<Void, Never>?
+    private var legacyTask: Task<Void, Never>?
+    private var legacyNotified = false
     private var lastMadiRate: Int?
     private var lastConnectedHost: String?
 
     private let connectedInterval:    Duration = .milliseconds(500)
     private let disconnectedInterval: Duration = .seconds(3)
+    private let legacyCheckInterval:  Duration = .seconds(30)
 
     init(state: AppState, settings: AppSettings) {
         self.state = state
@@ -26,11 +29,14 @@ final class SyncEngine {
         guard task == nil else { return }
         Logger.shared.info("Sync starting (host: \(settings.effectiveHost))")
         task = Task { await loop() }
+        legacyTask = Task { await legacyLoop() }
     }
 
     func stop() {
         task?.cancel()
         task = nil
+        legacyTask?.cancel()
+        legacyTask = nil
         state.connectionState = .disconnected
         Logger.shared.info("Sync stopped")
     }
@@ -111,6 +117,26 @@ final class SyncEngine {
             }
 
             try? await Task.sleep(for: connected ? connectedInterval : disconnectedInterval)
+        }
+    }
+
+    private func legacyLoop() async {
+        while !Task.isCancelled {
+            let found = await Task.detached { LegacyScriptDetector.detect() }.value
+            if found != state.legacyScriptDetected {
+                state.legacyScriptDetected = found
+                if found {
+                    Logger.shared.warn("Old M-1620 Rate Sync script detected — it also sets the sample rate")
+                } else {
+                    Logger.shared.info("Old M-1620 Rate Sync script no longer detected")
+                }
+            }
+            if found && !legacyNotified {
+                legacyNotified = true
+                await notify(title: "Old M-1620 Rate Sync is still installed",
+                             body: "It changes the sample rate on its own and can fight Synklok. Open Synklok for how to remove it.")
+            }
+            try? await Task.sleep(for: legacyCheckInterval)
         }
     }
 
