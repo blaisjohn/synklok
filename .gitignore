@@ -29,3 +29,7 @@ dist/
 *.dmg
 *.pkg
 *.zip
+
+# .NET (Windows version)
+windows/**/bin/
+windows/**/obj/

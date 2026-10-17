@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Synklok.Core.Tests/Synklok.Core.Tests.csproj" />
+  <Project Path="Synklok.Core/Synklok.Core.csproj" />
+  <Project Path="Synklok.MockDevice/Synklok.MockDevice.csproj" />
+  <Project Path="Synklok.Tray/Synklok.Tray.csproj" />
+</Solution>
