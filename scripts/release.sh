@@ -111,8 +111,10 @@ if [[ -d "$SITE/.git" ]]; then
   "$SPM/artifacts/sparkle/Sparkle/bin/generate_appcast" --account synklok \
     --download-url-prefix "$FEED_URL_PREFIX" --link https://synklok.app \
     --maximum-deltas 0 --embed-release-notes "$DL"
-  # Stable link for the site's Download button. release.sh owns _redirects.
-  echo "/download /downloads/${DMG:t} 302" > "$SITE/_redirects"
+  # Stable link for the site's Download button. Other lines (the Windows
+  # /download-windows link from release-windows.sh) are kept.
+  { grep -v '^/download ' "$SITE/_redirects" 2>/dev/null || true; echo "/download /downloads/${DMG:t} 302"; } > "$SITE/_redirects.new"
+  mv "$SITE/_redirects.new" "$SITE/_redirects"
   echo "Update feed written to $DL/appcast.xml and /download pointed at ${DMG:t}."
   echo "Review, then commit and push synklok-web to publish."
 else

@@ -16,8 +16,12 @@ public sealed class TrayContext : ApplicationContext
     private readonly ToolStripMenuItem statusItem = new() { Enabled = false };
     private readonly ToolStripMenuItem autoSyncItem = new("Auto-sync enabled") { CheckOnClick = false };
     private readonly ToolStripMenuItem loginItem = new("Launch at login") { CheckOnClick = false };
+    private readonly ToolStripMenuItem checkUpdatesItem = new("Check for updates…");
     private StatusWindow? statusWindow;
     private SettingsForm? settingsForm;
+    // The installer signals this to ask a running copy to quit before replacing it.
+    private readonly EventWaitHandle quitSignal = new(false, EventResetMode.AutoReset, @"Local\Synklok.Tray.Quit");
+    private readonly RegisteredWaitHandle quitWait;
 
     public TrayContext()
     {
@@ -58,7 +62,15 @@ public sealed class TrayContext : ApplicationContext
             Notify("Synklok is running", "Find the metronome in the system tray (click ^ by the clock). Drag it onto the taskbar to keep it visible.");
         }
 
+        var ui = SynchronizationContext.Current!;
+        quitWait = ThreadPool.RegisterWaitForSingleObject(quitSignal, (_, _) =>
+        {
+            FileLogger.Shared.Info("Quitting: asked to by the Synklok installer");
+            ui.Post(_ => Quit(), null);
+        }, null, Timeout.Infinite, executeOnlyOnce: true);
+
         _ = engine.RunAsync();
+        Updater.Start(Quit);
         Refresh();
     }
 
@@ -68,6 +80,7 @@ public sealed class TrayContext : ApplicationContext
         var menu = new ContextMenuStrip();
         autoSyncItem.Click += (_, _) => TogglePause();
         loginItem.Click += (_, _) => SetLaunchAtLogin(!StartupRegistration.IsEnabled);
+        checkUpdatesItem.Click += (_, _) => Updater.CheckNow();
         menu.Items.AddRange([
             statusItem,
             new ToolStripSeparator(),
@@ -75,11 +88,12 @@ public sealed class TrayContext : ApplicationContext
             loginItem,
             new ToolStripSeparator(),
             new ToolStripMenuItem("Settings…", null, (_, _) => ShowSettings()),
+            checkUpdatesItem,
             new ToolStripMenuItem("Copy diagnostics", null, (_, _) => CopyDiagnostics()),
             new ToolStripMenuItem("Open log folder", null, (_, _) => OpenLogFolder()),
             new ToolStripMenuItem("About Synklok", null, (_, _) => ShowAbout()),
             new ToolStripSeparator(),
-            new ToolStripMenuItem("Quit Synklok", null, (_, _) => ExitThread()),
+            new ToolStripMenuItem("Quit Synklok", null, (_, _) => Quit()),
         ]);
         menu.Opening += (_, _) => Refresh();
         return menu;
@@ -134,12 +148,30 @@ public sealed class TrayContext : ApplicationContext
             $"Synklok for Windows {Diagnostics.Version}\n\n" +
             "Keeps your RME M-1620 Pro D's sample rate matched to its MADI input.\n\n" +
             "© 2026 John Blais. MIT License.\nhttps://synklok.app\n\n" +
+            "Uses WinSparkle and .NET; their licenses are in Settings → Acknowledgements.\n\n" +
             "Not affiliated with RME or Synthax.",
             "About Synklok", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+    public static void ShowAcknowledgements()
+    {
+        var file = Path.Combine(AppContext.BaseDirectory, "Acknowledgements.txt");
+        if (File.Exists(file))
+            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(file) { UseShellExecute = true });
+        else
+            MessageBox.Show("Acknowledgements.txt is missing. Reinstall Synklok from synklok.app to restore it.",
+                "Synklok", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    }
+
     public void SettingsChanged() => settings.Save();
 
-    public void Quit() => ExitThread();
+    // Updating can ask twice (WinSparkle, then the installer); quit once.
+    private bool quitting;
+    public void Quit()
+    {
+        if (quitting) return;
+        quitting = true;
+        ExitThread();
+    }
 
     public SyncEngine Engine => engine;
 
@@ -169,6 +201,7 @@ public sealed class TrayContext : ApplicationContext
         statusItem.Text = summary;
         autoSyncItem.Checked = !engine.IsPaused;
         loginItem.Checked = StartupRegistration.IsEnabled;
+        checkUpdatesItem.Enabled = Updater.IsAvailable;
         statusWindow?.UpdateFrom(engine);
     }
 
@@ -186,6 +219,9 @@ public sealed class TrayContext : ApplicationContext
     protected override void ExitThreadCore()
     {
         engine.Stop();
+        Updater.Stop();
+        quitWait.Unregister(null);
+        quitSignal.Dispose();
         tray.Visible = false;
         tray.Dispose();
         statusWindow?.Dispose();

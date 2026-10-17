@@ -26,13 +26,14 @@ public static class Diagnostics
 
         return string.Join(Environment.NewLine,
             $"Synklok for Windows diagnostics — {DateTime.Now:yyyy-MM-dd HH:mm:ss}",
-            $"App: {Version}",
+            $"App: {Version} (build {Updater.BuildNumber})",
             $"Windows: {RuntimeInformation.OSDescription} ({RuntimeInformation.OSArchitecture})",
             $"Device address: {settings.EffectiveHost} ({(settings.UseCustomHost ? "custom" : "default")})",
             $"Connection: {connection}",
             $"Device rate: {Hz(engine.DeviceRate)} | MADI input: {Hz(engine.MadiRate)} | MADI sync: {sync}",
             $"Auto-sync: {(engine.IsPaused ? "paused" : "on")} | Out of sync: {(engine.RateMismatch ? "yes" : "no")}",
             $"Launch at login: {(StartupRegistration.IsEnabled ? "on" : "off")}",
+            $"Update checks: {(!Updater.IsAvailable ? "unavailable" : Updater.AutomaticChecks ? "automatic" : "manual")} | Last check: {Updater.LastCheck?.ToLocalTime().ToString("yyyy-MM-dd HH:mm") ?? "never"} | Feed: {Updater.FeedUrl}",
             "",
             $"--- last {logLines} log lines ---",
             FileLogger.Shared.Tail(logLines));

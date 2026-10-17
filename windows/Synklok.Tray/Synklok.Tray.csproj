@@ -12,10 +12,26 @@
     <RootNamespace>Synklok.Tray</RootNamespace>
     <ApplicationIcon>Assets\synklok.ico</ApplicationIcon>
     <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
-    <Version>1.0.0</Version>
     <Product>Synklok</Product>
+    <Company>John Blais</Company>
     <Copyright>© 2026 John Blais. MIT License.</Copyright>
+    <!-- scripts/release-windows.sh passes the version and build number from
+         project.yml, so Mac and Windows share one version. These defaults are
+         for local builds. -->
+    <Version>1.0.3</Version>
+    <SynklokBuild Condition="'$(SynklokBuild)' == ''">0</SynklokBuild>
+    <FileVersion>$(Version).$(SynklokBuild)</FileVersion>
   </PropertyGroup>
+
+  <ItemGroup>
+    <AssemblyMetadata Include="BuildNumber" Value="$(SynklokBuild)" />
+    <AssemblyMetadata Include="UpdateFeedUrl" Value="$(SynklokUpdateFeed)" Condition="'$(SynklokUpdateFeed)' != ''" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Automatic updates (Sparkle-compatible feeds and EdDSA signatures). -->
+    <PackageReference Include="WinSparkle" Version="0.9.4" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Synklok.Core\Synklok.Core.csproj" />

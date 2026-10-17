@@ -1,7 +1,8 @@
 # Synklok — Setup
 
 **Synklok** is a macOS menu bar app that auto-syncs the RME M-1620 Pro D
-sample rate to its MADI input.
+sample rate to its MADI input. The Windows version is covered at the end
+([Windows version](#windows-version)).
 
 ## Source layout
 
@@ -119,3 +120,73 @@ which deploys to synklok.app. Installed copies of Synklok check
 - macOS asks to allow Synklok to find devices on the local network: **Allow**.
   If it was denied: System Settings → Privacy & Security → Local Network.
 - Launch at login is a toggle in Synklok's settings.
+
+## Windows version
+
+The Windows tray app lives in `windows/` (.NET 10 WinForms; see
+[windows/README.md](windows/README.md)). It builds and ships entirely from the
+Mac. It shares the Mac's version number (`project.yml`) and Sparkle update
+key; everything else is separate.
+
+| Piece | Where |
+|---|---|
+| Installer | `Synklok-<version>-<build>-Setup.exe`, NSIS, per-user (no admin): `%LOCALAPPDATA%\Programs\Synklok` |
+| Download | GitHub release `windows-<version>` on blaisjohn/synklok (Cloudflare Pages caps files at 25 MB; the installer is ~34 MB) |
+| Stable link | `synklok.app/download-windows` → that release asset (`_redirects`) |
+| Update feed | `synklok.app/downloads/appcast-windows.xml`, read by [WinSparkle](https://winsparkle.org) daily |
+| Signing | Authenticode via Azure Artifact Signing (publisher "John Blais"); updates also carry the Sparkle EdDSA signature |
+
+### One-time setup (Windows)
+
+1. .NET 10 SDK in `~/.dotnet` (not on PATH; the scripts add it).
+2. `brew install makensis jsign azure-cli osslsigncode`
+3. **Azure Artifact Signing** ($9.99/month, Basic tier), on John's *personal*
+   Microsoft account. Billing account type Individual, legal name and address
+   exactly as on his driver's licence.
+   - portal.azure.com → Subscriptions → Resource providers → register `Microsoft.CodeSigning`.
+   - Artifact Signing Accounts → Create (resource group `synklok`, region East US, Basic).
+   - On the account: Access control (IAM) → give yourself **Artifact Signing
+     Identity Verifier** and **Artifact Signing Certificate Profile Signer**.
+   - Identity validations → Individual → New identity → Public; finish the
+     AU10TIX ID + selfie check on the phone (Microsoft Authenticator).
+   - Certificate profiles → Create → Public Trust, linked to that validation.
+   - Put the account and profile names at the top of `scripts/sign-windows.sh`.
+4. `az login` (opens a browser; lasts for weeks). Check with
+   `scripts/sign-windows.sh --check`.
+
+Microsoft issues a new 3-day certificate behind the scenes for every signing
+session; jsign timestamps each signature, so shipped installers stay valid
+after that and even if the Azure account is later cancelled. SmartScreen may
+still warn ("Windows protected your PC", but naming John Blais) until enough
+people have installed; reputation carries over to later releases because
+they're signed by the same identity.
+
+### Each release (Windows)
+
+1. Bump `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in `project.yml` (shared
+   with the Mac; ship whichever platforms changed, a platform may skip a number).
+2. Optional notes: `release-notes/<version>-windows.html` (shown in the update window).
+3. `scripts/release-windows.sh` — tests, builds, signs, writes the installer to
+   `dist/windows/`, adds it to `synklok-web/downloads/appcast-windows.xml` and
+   points `/download-windows` at its GitHub URL. Nothing is public yet.
+4. Commit and push this repo.
+5. `scripts/release-windows.sh --publish` — creates the `windows-<version>`
+   GitHub release and uploads the installer (public).
+6. Commit and push synklok-web — publishes the feed and the download link.
+
+The script builds the last commit (a `git archive` of HEAD), so uncommitted
+work in this shared working tree never ships. Commit first.
+
+Testing:
+- **Update test on a PC, nothing public:** after step 3, run
+  `scripts/test-windows-update.sh`. It serves the new installer and a copy of
+  the feed from this Mac on port 8091, and builds an older "localtest" installer
+  that reads it. Install that on the PC, then Check for updates….
+- **Shareable test build:** `ALLOW_UNSIGNED=1 scripts/release-windows.sh --test-build 3`
+  (→ `dist/windows/test/`, reports itself as `<version>-test3`, build 3) and,
+  once the code is pushed, `scripts/release-windows.sh --publish-test 3` makes a
+  GitHub *pre-release* `windows-<version>-test3`. It reads the real feed, so it
+  updates itself to the finished release once that's published.
+
+The Mac's `scripts/release.sh` and `release-windows.sh` each rewrite only their
+own line of `synklok-web/_redirects`.

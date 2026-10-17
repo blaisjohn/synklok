@@ -15,6 +15,7 @@ public sealed class SettingsForm : Form
     private readonly CheckBox notifyRate = new() { Text = "Notify on sample rate change", AutoSize = true };
     private readonly CheckBox notifyDisconnect = new() { Text = "Notify when the device disconnects", AutoSize = true };
     private readonly CheckBox launchAtLogin = new() { Text = "Launch Synklok when I sign in to Windows", AutoSize = true };
+    private readonly CheckBox autoUpdate = new() { Text = "Automatically check for updates", AutoSize = true };
 
     public SettingsForm(TrayContext app, AppSettings settings)
     {
@@ -36,6 +37,8 @@ public sealed class SettingsForm : Form
         notifyRate.Checked = settings.NotifyOnRateChange;
         notifyDisconnect.Checked = settings.NotifyOnDisconnect;
         launchAtLogin.Checked = StartupRegistration.IsEnabled;
+        autoUpdate.Checked = Updater.AutomaticChecks;
+        autoUpdate.Enabled = Updater.IsAvailable;
 
         useCustom.CheckedChanged += (_, _) =>
         {
@@ -48,6 +51,7 @@ public sealed class SettingsForm : Form
         notifyRate.CheckedChanged += (_, _) => { settings.NotifyOnRateChange = notifyRate.Checked; app.SettingsChanged(); };
         notifyDisconnect.CheckedChanged += (_, _) => { settings.NotifyOnDisconnect = notifyDisconnect.Checked; app.SettingsChanged(); };
         launchAtLogin.CheckedChanged += (_, _) => app.SetLaunchAtLogin(launchAtLogin.Checked);
+        autoUpdate.CheckedChanged += (_, _) => Updater.AutomaticChecks = autoUpdate.Checked;
 
         var hostRow = Row(host, test);
         var device = Group("Device",
@@ -58,6 +62,14 @@ public sealed class SettingsForm : Form
         var notifications = Group("Notifications", notifyRate, notifyDisconnect);
         var startup = Group("Startup", launchAtLogin);
 
+        var checkNow = new Button { Text = "Check now", AutoSize = true, Enabled = Updater.IsAvailable };
+        checkNow.Click += (_, _) => Updater.CheckNow();
+        var lastCheck = Updater.LastCheck is DateTimeOffset t ? $"Last checked {t.ToLocalTime():g}." : "Not checked yet.";
+        var updates = Group("Updates", autoUpdate,
+            Row(Note(Updater.IsAvailable
+                ? $"Checks synklok.app once a day and asks before installing. {lastCheck}"
+                : "Automatic updates aren't available in this copy. Download the latest version from synklok.app."), checkNow));
+
         var logPath = new TextBox { Text = FileLogger.Shared.LogFile, ReadOnly = true, Width = 300, BorderStyle = BorderStyle.FixedSingle };
         var openLogs = new Button { Text = "Open folder", AutoSize = true };
         openLogs.Click += (_, _) => TrayContext.OpenLogFolder();
@@ -67,9 +79,11 @@ public sealed class SettingsForm : Form
 
         var about = new LinkLabel { Text = $"Synklok for Windows {Diagnostics.Version} · About", AutoSize = true, Margin = new Padding(3, 8, 3, 0) };
         about.LinkClicked += (_, _) => TrayContext.ShowAbout();
+        var acknowledgements = new LinkLabel { Text = "Acknowledgements", AutoSize = true, Margin = new Padding(3, 8, 3, 0) };
+        acknowledgements.LinkClicked += (_, _) => TrayContext.ShowAcknowledgements();
 
         var layout = new FlowLayoutPanel { AutoSize = true, FlowDirection = FlowDirection.TopDown, WrapContents = false, Dock = DockStyle.Fill };
-        layout.Controls.AddRange([device, notifications, startup, logs, about]);
+        layout.Controls.AddRange([device, notifications, startup, updates, logs, Row(about, acknowledgements)]);
         Controls.Add(layout);
     }
 
