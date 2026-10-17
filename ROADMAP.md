@@ -30,3 +30,11 @@ clock)?* Synklok currently follows **coax MADI only**.
 | Follow the Mac directly (Core Audio) | Polling delay; needing MADI lock before reacting | Change the MADIface rate; time how fast the M-1620 follows |
 | Fold in Dante Rate Sync | One app for Pro Tools → Dante → M-1620 | Only if he runs Dante (prototype in `~/Downloads/dante_rate_sync`) |
 | Tests for the switching logic | Regressions as the rules above get richer | — (internal) |
+
+
+**API notes for "Choose what to follow"** (from the online manual's JSON(OSC) chart,
+https://docs.rme-audio.com/m1620d/150-1c_remote_overview/): clock sources are
+`madi_coaxial`, `madi_optical`, `wordclock`, `dante`, `internal`, each with `rate`, `sync`,
+`soundness` (poll each key explicitly). `clock.reference_clock` names the input currently
+clocking the device, so Synklok could follow it automatically. `clock.word_clock_single_speed`
+means a 96 kHz system can present 48 kHz on word clock; don't blindly copy that rate.
