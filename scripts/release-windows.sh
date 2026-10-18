@@ -24,7 +24,8 @@
 #                                               current one), for testing updates; feed untouched
 #   scripts/release-windows.sh --publish-test N upload that test installer as a GitHub
 #                                               pre-release (public), to share for testing
-# ALLOW_UNSIGNED=1 skips Authenticode signing (test builds only).
+# Authenticode signing happens when scripts/sign-windows.sh is set up (it isn't
+# for now: releases ship unsigned by choice); ALLOW_UNSIGNED=1 skips it anyway.
 # SYNKLOK_UPDATE_FEED=<url> points a test build at another feed (see test-windows-update.sh).
 set -euo pipefail
 
@@ -67,6 +68,15 @@ print(html.unescape(re.sub(r"<[^>]+>", "", t)).strip())
 ' "$NOTES")"
   fi
   [[ -f "$FILE" ]] || { echo "No $FILE yet. Build it first (see Usage)." >&2; exit 1; }
+  # Unsigned installer (no Authenticode certificate table)? Say so up front.
+  if [[ "$1" == --publish ]] && python3 -I -c '
+import struct, sys
+d = open(sys.argv[1], "rb").read(4096)
+pe = struct.unpack_from("<I", d, 0x3c)[0]
+dirs = pe + 24 + (112 if struct.unpack_from("<H", d, pe + 24)[0] == 0x20b else 96)
+sys.exit(0 if struct.unpack_from("<II", d, dirs + 32)[1] == 0 else 1)' "$FILE"; then
+    BODY="**Not code-signed:** the first time you install it, Windows says \"Windows protected your PC\". Click **More info → Run anyway**. Updates install without this."$'\n\n'"$BODY"
+  fi
   git fetch -q origin main
   [[ "$(git rev-parse HEAD)" == "$(git rev-parse origin/main)" ]] \
     || { echo "Push the Synklok repo first: the release is tagged at GitHub's main branch." >&2; exit 1; }
@@ -101,9 +111,9 @@ DIRTY=$(git status --porcelain -- windows project.yml release-notes LICENSE)
 [[ -z "$DIRTY" ]] || echo "Note: building commit $(git rev-parse --short HEAD); uncommitted changes aren't included:\n$DIRTY"
 
 SIGN=1
-if [[ "${ALLOW_UNSIGNED:-}" == 1 ]]; then
+if [[ "${ALLOW_UNSIGNED:-}" == 1 ]] || ! scripts/sign-windows.sh --configured; then
   SIGN=0
-  echo "ALLOW_UNSIGNED=1: building WITHOUT Authenticode signatures (Windows will warn more)."
+  echo "Not code-signing (see scripts/sign-windows.sh); Windows will show its SmartScreen warning on first install."
 else
   scripts/sign-windows.sh --check
   export SYNKLOK_SIGN_TOKEN=$(az account get-access-token --resource https://codesigning.azure.net --query accessToken -o tsv)

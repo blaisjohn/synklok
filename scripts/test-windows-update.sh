@@ -6,7 +6,7 @@
 # should offer, download, verify and install the real build.
 #
 # Usage: scripts/release-windows.sh && scripts/test-windows-update.sh
-#        (ALLOW_UNSIGNED=1 for both while signing isn't set up; Ctrl-C stops the server)
+#        (Ctrl-C stops the server)
 set -euo pipefail
 cd "${0:A:h}/.."
 SITE="${SYNKLOK_WEB:-$HOME/Documents/synklok-web}"

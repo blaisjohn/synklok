@@ -134,39 +134,55 @@ key; everything else is separate.
 | Download | GitHub release `windows-<version>` on blaisjohn/synklok (Cloudflare Pages caps files at 25 MB; the installer is ~34 MB) |
 | Stable link | `synklok.app/download-windows` → that release asset (`_redirects`) |
 | Update feed | `synklok.app/downloads/appcast-windows.xml`, read by [WinSparkle](https://winsparkle.org) daily |
-| Signing | Authenticode via Azure Artifact Signing (publisher "John Blais"); updates also carry the Sparkle EdDSA signature |
+| Signing | **Not code-signed for now** (John's call, Oct 2026), so Windows shows its SmartScreen warning on first install. Updates are verified with the Sparkle EdDSA key either way. Optional Authenticode signing via Azure Artifact Signing: see below |
 
 ### One-time setup (Windows)
 
 1. .NET 10 SDK in `~/.dotnet` (not on PATH; the scripts add it).
-2. `brew install makensis jsign azure-cli osslsigncode`
-3. **Azure Artifact Signing** ($9.99/month, Basic tier), on John's *personal*
-   Microsoft account. Billing account type Individual, legal name and address
-   exactly as on his driver's licence.
-   - portal.azure.com → Subscriptions → Resource providers → register `Microsoft.CodeSigning`.
-   - Artifact Signing Accounts → Create (resource group `synklok`, region East US, Basic).
-   - On the account: Access control (IAM) → give yourself **Artifact Signing
-     Identity Verifier** and **Artifact Signing Certificate Profile Signer**.
-   - Identity validations → Individual → New identity → Public; finish the
-     AU10TIX ID + selfie check on the phone (Microsoft Authenticator).
-   - Certificate profiles → Create → Public Trust, linked to that validation.
-   - Put the account and profile names at the top of `scripts/sign-windows.sh`.
-4. `az login` (opens a browser; lasts for weeks). Check with
-   `scripts/sign-windows.sh --check`.
+2. `brew install makensis`
+
+### Optional: code signing (not set up)
+
+In October 2026 John decided not to pay for signing yet. A newly signed
+publisher still gets SmartScreen's "Windows protected your PC" until it has
+hundreds of installs, so for a small audience $9.99/month mostly changes the
+publisher line from "Unknown" to "John Blais". Reasons to switch it on later:
+someone's PC blocks it outright (Windows 11 **Smart App Control** refuses
+unsigned apps with no "Run anyway"), more users, or a studio that requires
+signed software. Free alternatives to look at first: SignPath Foundation
+(open-source projects, builds on GitHub Actions) or the Microsoft Store.
+
+Already done: an Azure pay-as-you-go account on John's personal Microsoft
+account (john.blais@gmail.com, billing account type Individual) with
+`Microsoft.CodeSigning` registered. No signing account exists, so it costs
+nothing. To switch signing on:
+
+1. `brew install jsign azure-cli osslsigncode`, then `az login` (browser).
+2. Create the Artifact Signing account (billing starts, $9.99/month Basic):
+   `az group create -n synklok -l eastus` and
+   `az artifact-signing create -n synklok -l eastus -g synklok --sku Basic`
+   (the extension: `az extension add --name artifact-signing`).
+3. On the account in portal.azure.com: Access control (IAM) → give yourself
+   **Artifact Signing Identity Verifier** and **Artifact Signing Certificate
+   Profile Signer**.
+4. Identity validations → Individual → New identity → Public; finish the
+   AU10TIX ID + selfie check on the phone (Microsoft Authenticator). The name
+   and address come from the Azure billing account and must match the ID.
+5. Certificate profiles → Create → Public Trust, linked to that validation.
+6. Put the account and profile names at the top of `scripts/sign-windows.sh`
+   and check with `scripts/sign-windows.sh --check`. From then on
+   `release-windows.sh` signs every file automatically.
 
 Microsoft issues a new 3-day certificate behind the scenes for every signing
 session; jsign timestamps each signature, so shipped installers stay valid
-after that and even if the Azure account is later cancelled. SmartScreen may
-still warn ("Windows protected your PC", but naming John Blais) until enough
-people have installed; reputation carries over to later releases because
-they're signed by the same identity.
+after that and even if the Azure account is later cancelled.
 
 ### Each release (Windows)
 
 1. Bump `MARKETING_VERSION` / `CURRENT_PROJECT_VERSION` in `project.yml` (shared
    with the Mac; ship whichever platforms changed, a platform may skip a number).
 2. Optional notes: `release-notes/<version>-windows.html` (shown in the update window).
-3. `scripts/release-windows.sh` — tests, builds, signs, writes the installer to
+3. `scripts/release-windows.sh` — tests, builds (and signs, if set up), writes the installer to
    `dist/windows/`, adds it to `synklok-web/downloads/appcast-windows.xml` and
    points `/download-windows` at its GitHub URL. Nothing is public yet.
 4. Commit and push this repo.
@@ -182,7 +198,7 @@ Testing:
   `scripts/test-windows-update.sh`. It serves the new installer and a copy of
   the feed from this Mac on port 8091, and builds an older "localtest" installer
   that reads it. Install that on the PC, then Check for updates….
-- **Shareable test build:** `ALLOW_UNSIGNED=1 scripts/release-windows.sh --test-build 3`
+- **Shareable test build:** `scripts/release-windows.sh --test-build 3`
   (→ `dist/windows/test/`, reports itself as `<version>-test3`, build 3) and,
   once the code is pushed, `scripts/release-windows.sh --publish-test 3` makes a
   GitHub *pre-release* `windows-<version>-test3`. It reads the real feed, so it

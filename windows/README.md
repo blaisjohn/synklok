@@ -33,5 +33,9 @@ WinSparkle.dll, Acknowledgements.txt, uninstaller). Settings:
 `%APPDATA%\Synklok\settings.json`. Logs: `%LOCALAPPDATA%\Synklok\Logs`.
 WinSparkle's own settings: `HKCU\Software\Synklok\WinSparkle`.
 
+Releases aren't code-signed for now (see SETUP.md → Windows version), so
+Windows shows "Windows protected your PC" on first install; updates are still
+verified with the Sparkle key.
+
 Not done yet: network device discovery (enter the address manually; USB
 REMOTE at 172.20.0.1 works without setup).

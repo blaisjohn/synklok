@@ -10,7 +10,12 @@
 #   "Artifact Signing Certificate Profile Signer" role).
 #
 # Usage: scripts/sign-windows.sh FILE...
-#        scripts/sign-windows.sh --check     (set up and signed in? signs nothing)
+#        scripts/sign-windows.sh --check       (set up and signed in? signs nothing)
+#        scripts/sign-windows.sh --configured  (exit 0 if ACCOUNT/PROFILE are filled in)
+#
+# Not set up as of October 2026: John chose to ship Windows builds unsigned
+# for now ($9.99/month didn't pay off for a small audience; SmartScreen warns
+# new publishers either way). Filling in ACCOUNT and PROFILE turns signing on.
 # scripts/release-windows.sh exports SYNKLOK_SIGN_TOKEN so each file doesn't
 # fetch a new token; on its own this script fetches one from the Azure CLI.
 set -euo pipefail
@@ -21,6 +26,9 @@ ENDPOINT="${SYNKLOK_SIGN_ENDPOINT:-eus.codesigning.azure.net}"   # East US
 ACCOUNT="${SYNKLOK_SIGN_ACCOUNT:-}"
 PROFILE="${SYNKLOK_SIGN_PROFILE:-}"
 
+if [[ "${1:-}" == --configured ]]; then
+  [[ -n "$ACCOUNT" && -n "$PROFILE" ]]; exit
+fi
 if [[ -z "$ACCOUNT" || -z "$PROFILE" ]]; then
   echo "sign-windows.sh: set ACCOUNT and PROFILE at the top of this script (SETUP.md → Windows → Code signing)." >&2
   exit 1
